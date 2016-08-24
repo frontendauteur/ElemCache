@@ -17,15 +17,19 @@
         <script src="./ElemCache.js"></script>
 
         <script>
-            var elems = [
-              {key: 'elem1', selector: '#elem1'},
-              {key: 'elem2', selector: '.elem2', parentKey: 'elem1'}
-            ]
+            var elems = {
+              elem1: {selector: '#elem1'},
+              elem2: {selector: '.elem2', parentKey: 'elem1'}
+            }
             var test1 = new window.ElemCache()
 
-            test1.init({Elems: elems})
+            test1.init({elems: elems})
 
             console.log(test1.elem1)
+            console.log(test1.elem2)
+
+            test1.elem2 = {selector: '#elem1'}
+
             console.log(test1.elem2)
         </script>
     </body>

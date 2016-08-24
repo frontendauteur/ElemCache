@@ -1,75 +1,79 @@
 
 window.ElemCache = function () {
-  var Self = this
-  var Settings = {}
-  var ObjsCache = {}
+  var self = this
+  var settings = {}
+  var objsCache = {}
   var $container
 
   // performs the jQuery selection and then caches and returns it
-  function cacheObj (Elem) {
+  function cacheObj (key) {
+    var elem = settings.elems[key]
     var $parent
 
     // if the selector is an ID, don't bother with parent
-    if (Elem.selector.indexOf('#') === 0) {
-      ObjsCache[Elem.key] = window.jQuery(Elem.selector)
+    if (elem.selector.indexOf('#') === 0) {
+      objsCache[elem.key] = window.jQuery(elem.selector)
 
-      return ObjsCache[Elem.key]
+      return objsCache[elem.key]
     }
 
     // set the parent to search in
-    if (typeof (Elem.parentKey) === 'string' && typeof (ObjsCache[Elem.parentKey]) !== 'undefined') {
-      $parent = ObjsCache[Elem.parentKey]
+    if (typeof (elem.parentKey) === 'string' && typeof (objsCache[elem.parentKey]) !== 'undefined') {
+      $parent = objsCache[elem.parentKey]
     } else {
       $parent = $container
     }
 
-    ObjsCache[Elem.key] = $parent.find(Elem.selector)
+    objsCache[elem.key] = $parent.find(elem.selector)
 
-    return ObjsCache[Elem.key]
+    return objsCache[elem.key]
   }
 
   // checks for a cached version of the jQuery object defined by `key` and returns it if found
-  function getObj (Elem) {
+  function getObj (key) {
     // check for a cached version of the requested object
-    if (typeof (ObjsCache[Elem.key]) !== 'undefined') {
-      return ObjsCache[Elem.key]
+    if (typeof (objsCache[key]) !== 'undefined') {
+      return objsCache[key]
     }
 
-    return cacheObj(Elem)
+    return cacheObj(key)
   }
 
-  // closure function for creating a getter for each elem
-  function setupObj (Elem) {
-    Object.defineProperty(Self, Elem.key, {
+  // closure function for creating a getter/setter for each elem
+  function setupObj (key) {
+    settings.elems[key].key = key
+
+    Object.defineProperty(self, key, {
       get: function () {
-        return getObj(Elem)
+        return getObj(key)
+      },
+      set: function (newElem) {
+        settings.elems[key] = newElem
+
+        delete objsCache[key]
       }
     })
   }
 
   // public
-  Self.init = function (Options) {
+  self.init = function (Options) {
     var Defaults = {
-      Elems: [],
+      elems: {},
       container: 'body'
     }
-    var i = 0
-    var Elem
+    var key
 
     // TODO - replace with non jQuery
-    window.jQuery.extend(Settings, Defaults, Options)
+    window.jQuery.extend(settings, Defaults, Options)
 
     // a global container as a default parent for searching
-    $container = window.jQuery(Settings.container)
+    $container = window.jQuery(settings.container)
 
     // loops over the elems list and creates a getter for each
-    for (i; i < Settings.Elems.length; i++) {
-      Elem = Settings.Elems[i]
-
-      // because we need a closure
-      setupObj(Elem)
+    for (key in settings.elems) {
+      setupObj(key)
     }
   }
 
-  return Self
+  return self
 }
