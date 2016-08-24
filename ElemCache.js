@@ -19,7 +19,9 @@ var ElemCache = function() {
 
     // if the selector is an ID, don't bother with parent
     if (Elem.selector.indexOf('#') === 0) {
-      return ObjsCache[Elem.key] = $(Elem.selector)
+      ObjsCache[Elem.key] = $(Elem.selector)
+
+      return ObjsCache[Elem.key]
     }
 
     // set the parent to search in
@@ -33,23 +35,32 @@ var ElemCache = function() {
     return ObjsCache[Elem.key] = $parent.find(Elem.selector)
   }
 
+  function getObjWrap (Elem) {
+    return function () {
+      return getObj(Elem)
+    }
+  }
+
   Self.init = function (Options) {
     var Defaults = {
         Elems: [],
         container: 'body'
     }
+    var i = 0
+    var Elem
 
+    // TODO - replace with non jQuery
     $.extend(Settings, Defaults, Options)
 
     // a global container as a default parent for searching
     $container = $(Settings.container)
 
     // loops over the elems list and creates a wrapper function around `getObj()` for each
-    $.each(Settings.Elems, function(i, Elem) {
-      Self.Objs[Elem.key] = function() {
-        return getObj(Elem)
-      }
-    })
+    for (i; i < Settings.Elems.length; i++) {
+      Elem = Settings.Elems[i]
+
+      Self.Objs[Elem.key] = getObjWrap(Elem)
+    }
   }
 
   return Self
