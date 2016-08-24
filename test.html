@@ -1,0 +1,44 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ElemCache Test</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css">
+    </head>
+    <body>
+        <div id="elem1">
+            <div class="elem2"></div>
+        </div>
+
+        <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+        <script src="./ElemCache.js"></script>
+
+        <script>
+            var elems = [
+              {key: 'elem1', selector: '#elem1'},
+              {key: 'elem2', selector: '.elem2', parentKey: 'elem1'}
+            ]
+            var test1 = new ElemCache
+            var test2 = new ElemCache
+
+            // initialize two identical caches
+            test1.init({Elems: elems})
+            test2.init({Elems: elems})
+
+            // should log "not already cached"
+            // console.log(test1)
+            console.log(test1.Objs.elem1())
+            // test1.Objs.elem2()
+
+            // // should log "already cached"
+            // test1.Objs.elem1()
+            // test1.Objs.elem2()
+
+            // // should log "not already cached"
+            // test2.Objs.elem1()
+        </script>
+    </body>
+</html>
