@@ -19,7 +19,7 @@ var ElemCache = function() {
 
     // if the selector is an ID, don't bother with parent
     if (Elem.selector.indexOf('#') === 0) {
-      ObjsCache[Elem.key] = $(Elem.selector)
+      ObjsCache[Elem.key] = window.jQuery(Elem.selector)
 
       return ObjsCache[Elem.key]
     }
@@ -50,10 +50,10 @@ var ElemCache = function() {
     var Elem
 
     // TODO - replace with non jQuery
-    $.extend(Settings, Defaults, Options)
+    window.jQuery.extend(Settings, Defaults, Options)
 
     // a global container as a default parent for searching
-    $container = $(Settings.container)
+    $container = window.jQuery(Settings.container)
 
     // loops over the elems list and creates a wrapper function around `getObj()` for each
     for (i; i < Settings.Elems.length; i++) {
