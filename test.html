@@ -21,24 +21,12 @@
               {key: 'elem1', selector: '#elem1'},
               {key: 'elem2', selector: '.elem2', parentKey: 'elem1'}
             ]
-            var test1 = new ElemCache
-            var test2 = new ElemCache
+            var test1 = new window.ElemCache()
 
-            // initialize two identical caches
             test1.init({Elems: elems})
-            test2.init({Elems: elems})
 
-            // should log "not already cached"
-            // console.log(test1)
             console.log(test1.elem1)
             console.log(test1.elem2)
-
-            // // should log "already cached"
-            // test1.Objs.elem1()
-            // test1.Objs.elem2()
-
-            // // should log "not already cached"
-            // test2.Objs.elem1()
         </script>
     </body>
 </html>
