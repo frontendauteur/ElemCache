@@ -41,7 +41,8 @@ window.ElemCache = function () {
 
   // closure function for creating a getter/setter for each elem
   function setupObj (key) {
-    settings.elems[key].key = key
+    // TODO - this was here to keep track of an elem's key, but it does not appear to be necessary
+    // settings.elems[key].key = key
 
     Object.defineProperty(Self, key, {
       get: function () {
