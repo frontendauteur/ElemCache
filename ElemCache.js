@@ -1,21 +1,13 @@
-var ElemCache = function() {
+
+window.ElemCache = function () {
   var Self = this
   var Settings = {}
   var ObjsCache = {}
   var $container
 
-  // Objs will be an object of functions, each named with an elem key
-  Self.Objs = {}
-
-  // checks for a cached version of the jQuery object defined by `selector` and returns it if found
-  // performs the jQuery selection if the object was not already cached, and then caches it
-  function getObj (Elem) {
+  // performs the jQuery selection and then caches and returns it
+  function cacheObj (Elem) {
     var $parent
-
-    // check for a cached version of the requested object
-    if (typeof(ObjsCache[Elem.key]) !== 'undefined') {
-      return ObjsCache[Elem.key]
-    }
 
     // if the selector is an ID, don't bother with parent
     if (Elem.selector.indexOf('#') === 0) {
@@ -25,26 +17,39 @@ var ElemCache = function() {
     }
 
     // set the parent to search in
-    if (typeof(Elem.parentKey) === 'string' && typeof(ObjsCache[Elem.parentKey]) !== 'undefined') {
+    if (typeof (Elem.parentKey) === 'string' && typeof (ObjsCache[Elem.parentKey]) !== 'undefined') {
       $parent = ObjsCache[Elem.parentKey]
     } else {
       $parent = $container
     }
 
-    // we didn't find a cached object earlier, so set the cache and return the object
-    return ObjsCache[Elem.key] = $parent.find(Elem.selector)
+    ObjsCache[Elem.key] = $parent.find(Elem.selector)
+
+    return ObjsCache[Elem.key]
   }
 
-  function getObjWrap (Elem) {
-    return function () {
-      return getObj(Elem)
+  // checks for a cached version of the jQuery object defined by `key` and returns it if found
+  function getObj (Elem) {
+    // check for a cached version of the requested object
+    if (typeof (ObjsCache[Elem.key]) !== 'undefined') {
+      return ObjsCache[Elem.key]
     }
+
+    return cacheObj(Elem)
+  }
+
+  function setupObj (Elem) {
+    Object.defineProperty(Self, Elem.key, {
+      get: function () {
+        return getObj(Elem)
+      }
+    })
   }
 
   Self.init = function (Options) {
     var Defaults = {
-        Elems: [],
-        container: 'body'
+      Elems: [],
+      container: 'body'
     }
     var i = 0
     var Elem
@@ -59,7 +64,8 @@ var ElemCache = function() {
     for (i; i < Settings.Elems.length; i++) {
       Elem = Settings.Elems[i]
 
-      Self.Objs[Elem.key] = getObjWrap(Elem)
+      // because we need a closure
+      setupObj(Elem)
     }
   }
 
