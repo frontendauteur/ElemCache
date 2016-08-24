@@ -38,6 +38,7 @@ window.ElemCache = function () {
     return cacheObj(Elem)
   }
 
+  // closure function for creating a getter for each elem
   function setupObj (Elem) {
     Object.defineProperty(Self, Elem.key, {
       get: function () {
@@ -46,6 +47,7 @@ window.ElemCache = function () {
     })
   }
 
+  // public
   Self.init = function (Options) {
     var Defaults = {
       Elems: [],
@@ -60,7 +62,7 @@ window.ElemCache = function () {
     // a global container as a default parent for searching
     $container = window.jQuery(Settings.container)
 
-    // loops over the elems list and creates a wrapper function around `getObj()` for each
+    // loops over the elems list and creates a getter for each
     for (i; i < Settings.Elems.length; i++) {
       Elem = Settings.Elems[i]
 
