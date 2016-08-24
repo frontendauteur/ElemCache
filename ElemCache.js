@@ -1,6 +1,6 @@
 
 window.ElemCache = function () {
-  var self = this
+  var Self = this
   var settings = {}
   var objsCache = {}
   var $container
@@ -43,7 +43,7 @@ window.ElemCache = function () {
   function setupObj (key) {
     settings.elems[key].key = key
 
-    Object.defineProperty(self, key, {
+    Object.defineProperty(Self, key, {
       get: function () {
         return getObj(key)
       },
@@ -56,15 +56,15 @@ window.ElemCache = function () {
   }
 
   // public
-  self.init = function (Options) {
-    var Defaults = {
+  Self.init = function (options) {
+    var defaults = {
       elems: {},
       container: 'body'
     }
     var key
 
     // TODO - replace with non jQuery
-    window.jQuery.extend(settings, Defaults, Options)
+    window.jQuery.extend(settings, defaults, options)
 
     // a global container as a default parent for searching
     $container = window.jQuery(settings.container)
@@ -75,5 +75,5 @@ window.ElemCache = function () {
     }
   }
 
-  return self
+  return Self
 }
