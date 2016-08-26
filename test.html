@@ -11,6 +11,14 @@
     <body>
         <div id="elem1">
             <div class="elem2"></div>
+            <div class="elem3"></div>
+        </div>
+        <div class="elem4"></div>
+        <div class="elem3">
+            <div class="elem4"></div>
+        </div>
+        <div class="elem3">
+            <div class="elem4"></div>
         </div>
 
         <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
@@ -19,7 +27,9 @@
         <script>
             var elems = {
               elem1: {selector: '#elem1'},
-              elem2: {selector: '.elem2', parentKey: 'elem1'}
+              elem2: {selector: '.elem2', parentKey: 'elem1'},
+              elem3: {selector: '.elem3'},
+              elem4: {selector: '.elem4', parentKey: 'elem3'},
             }
             var test1 = new window.ElemCache()
 
@@ -27,6 +37,8 @@
 
             console.log(test1.elem1)
             console.log(test1.elem2)
+            console.log(test1.elem3)
+            console.log(test1.elem4)
 
             test1.elem2 = {selector: '#elem1'}
 
