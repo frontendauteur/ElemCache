@@ -11,7 +11,7 @@ window.ElemCache = function () {
 
     // if the selector is an ID, don't bother with parent
     if (elem.selector.indexOf('#') === 0) {
-      objsCache[key] = document.getElementById(elem.selector.substr(1))
+      objsCache[key] = [ document.getElementById(elem.selector.substr(1)) ]
 
       return objsCache[key]
     }
@@ -20,7 +20,7 @@ window.ElemCache = function () {
     if (typeof (elem.parentKey) === 'string' && typeof (objsCache[elem.parentKey]) !== 'undefined') {
       parentElem = objsCache[elem.parentKey]
     } else {
-      parentElem = containerElem
+      parentElem = [ containerElem ]
     }
 
     objsCache[key] = findElems(elem.selector, parentElem)
@@ -40,9 +40,9 @@ window.ElemCache = function () {
 
   // closure function for creating a getter/setter for each elem
   function setupObj (key) {
+
     // TODO - this was here to keep track of an elem's key, but it does not appear to be necessary
     // settings.elems[key].key = key
-
     Object.defineProperty(Self, key, {
       get: function () {
         return getObj(key)
@@ -56,22 +56,19 @@ window.ElemCache = function () {
   }
 
   function findElems (selector, parentElem) {
-    if (!parentElem) {
+    if (!parentElem || !parentElem.length) {
       return false
     }
+
     if (parentElem.length > 1) {
-      var frag = document.createDocumentFragment()
+      var elems = []
 
       ;[].forEach.call(parentElem, function (parent) {
-        var children = parent.querySelectorAll(selector)
-
-        ;[].forEach.call(children, function (child) {
-          frag.appendChild(child)
-        })
+        elems = elems.concat(Array.prototype.slice.call(parent.querySelectorAll(selector)))
       })
-      return frag.children
+      return elems
     }
-    return parentElem.querySelectorAll(selector)
+    return Array.prototype.slice.call(parentElem[0].querySelectorAll(selector))
   }
 
   // public
